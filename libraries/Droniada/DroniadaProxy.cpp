@@ -5,6 +5,7 @@
 
 extern const AP_HAL::HAL& hal;
 
+//TODO move this typedef to header file
 typedef struct droniada 
 {
     unsigned char major; //1B
@@ -49,7 +50,7 @@ void DroniadaProxy::update()
 		d.major = buff[0];
 		d.minor = buff[1];
 		d.rssi = (buff[3] << 8) + buff[2];
-		//TODO d.crc = ...
+		//TODO d.crc = ... , and check CRC
 		hal.uartE->printf("Major: %c Minor: %c, Rssi: %d,", d.major, d.minor, d.rssi);
 	}
     }
