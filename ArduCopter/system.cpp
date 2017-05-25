@@ -253,6 +253,8 @@ void Copter::init_ardupilot()
     //-----------------------------
     init_barometer(true);
 
+    init_droniadaproxy();
+
     // initialise rangefinder
     init_rangefinder();
 

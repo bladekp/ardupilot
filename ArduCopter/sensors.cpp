@@ -24,6 +24,16 @@ void Copter::read_barometer(void)
     motors.set_air_density_ratio(barometer.get_air_density_ratio());
 }
 
+void Copter::init_droniadaproxy(void)
+{
+   droniadaproxy.init();
+}
+
+void Copter::read_droniadaproxy(void)
+{
+   droniadaproxy.update();
+}	
+
 void Copter::init_rangefinder(void)
 {
 #if RANGEFINDER_ENABLED == ENABLED
@@ -32,6 +42,7 @@ void Copter::init_rangefinder(void)
    rangefinder_state.enabled = (rangefinder.num_sensors() >= 1);
 #endif
 }
+
 
 // return rangefinder altitude in centimeters
 void Copter::read_rangefinder(void)

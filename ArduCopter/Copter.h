@@ -59,6 +59,7 @@
 #include <RC_Channel/RC_Channel.h>         // RC Channel Library
 #include <AP_Motors/AP_Motors.h>          // AP Motors library
 #include <AP_RangeFinder/AP_RangeFinder.h>     // Range finder library
+#include <Droniada/DroniadaProxy.h> 
 #include <AP_Proximity/AP_Proximity.h>
 #include <AP_OpticalFlow/AP_OpticalFlow.h>     // Optical Flow library
 #include <AP_RSSI/AP_RSSI.h>                   // RSSI Library
@@ -186,7 +187,7 @@ private:
     AP_Baro barometer;
     Compass compass;
     AP_InertialSensor ins;
-
+    DroniadaProxy droniadaproxy;
     RangeFinder rangefinder {serial_manager};
     struct {
         bool enabled:1;
@@ -1022,6 +1023,8 @@ private:
     void radio_passthrough_to_motors();
     void init_barometer(bool full_calibration);
     void read_barometer(void);
+    void init_droniadaproxy(void);
+    void read_droniadaproxy(void);
     void init_rangefinder(void);
     void read_rangefinder(void);
     bool rangefinder_alt_ok();
