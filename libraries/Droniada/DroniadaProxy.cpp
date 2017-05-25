@@ -5,15 +5,6 @@
 
 extern const AP_HAL::HAL& hal;
 
-//TODO move this typedef to header file
-typedef struct droniada 
-{
-    unsigned char major; //1B
-    unsigned char minor; //1B
-    unsigned short int rssi; //2B
-    unsigned long int crc; //8B
-} Droniada;
-
 unsigned char buff[12];
 int data_length = 0;
 
@@ -46,12 +37,15 @@ void DroniadaProxy::update()
 	buff[data_length++ - 2] = c;
 	if(data_length == 14){
 		data_length = 0;
-		Droniada d;
+		//Droniada d;
 		d.major = buff[0];
 		d.minor = buff[1];
 		d.rssi = (buff[3] << 8) + buff[2];
+		//send_message(DRONIADA_PROXY);
+		//try_to_send_message
+		//send_droniada_proxy(d.major, d.minor, d.rssi);
 		//TODO d.crc = ... , and check CRC
-		hal.uartE->printf("Major: %c Minor: %c, Rssi: %d,", d.major, d.minor, d.rssi);
+		//hal.uartE->printf("Major: %c Minor: %c, Rssi: %d,", d.major, d.minor, d.rssi);
 	}
     }
     

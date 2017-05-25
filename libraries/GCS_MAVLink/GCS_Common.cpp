@@ -1232,6 +1232,16 @@ void GCS_MAVLINK::send_raw_imu(const AP_InertialSensor &ins, const Compass &comp
         mag.z);        
 }
 
+void GCS_MAVLINK::send_droniada_proxy(unsigned char &major, unsigned char &minor, unsigned short int &rssi)
+{
+	mavlink_msg_droniada_proxy_send(
+		chan,
+		major,		
+		minor,	
+		rssi
+	);
+}
+
 void GCS_MAVLINK::send_scaled_pressure(AP_Baro &barometer)
 {
     uint32_t now = AP_HAL::millis();

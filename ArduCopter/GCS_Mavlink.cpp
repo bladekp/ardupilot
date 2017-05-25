@@ -596,6 +596,11 @@ bool GCS_MAVLINK_Copter::try_send_message(enum ap_message id)
         send_raw_imu(copter.ins, copter.compass);
         break;
 
+    case DRONIADA_PROXY:
+	CHECK_PAYLOAD_SIZE(DRONIADA_PROXY);
+	send_droniada_proxy(copter.droniadaproxy.d.major, copter.droniadaproxy.d.minor, copter.droniadaproxy.d.rssi);
+	break;	
+
     case MSG_RAW_IMU2:
         CHECK_PAYLOAD_SIZE(SCALED_PRESSURE);
         send_scaled_pressure(copter.barometer);
@@ -867,6 +872,8 @@ GCS_MAVLINK_Copter::data_stream_send(void)
         // don't send anything else at the same time as parameters
         return;
     }
+
+    send_message(DRONIADA_PROXY);
 
     if (copter.gcs_out_of_time) return;
 

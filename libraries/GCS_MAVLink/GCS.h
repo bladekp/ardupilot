@@ -15,6 +15,7 @@
 #include <AP_Mount/AP_Mount.h>
 #include <AP_Avoidance/AP_Avoidance.h>
 #include <AP_HAL/utility/RingBuffer.h>
+#include <Droniada/DroniadaProxy.h>
 
 // check if a message will fit in the payload space available
 #define HAVE_PAYLOAD_SPACE(chan, id) (comm_get_txspace(chan) >= GCS_MAVLINK::packet_overhead_chan(chan)+MAVLINK_MSG_ID_ ## id ## _LEN)
@@ -32,10 +33,11 @@
 /// please keep each MSG_ to a single MAVLink message. If need be
 /// create new MSG_ IDs for additional messages on the same
 /// stream
-enum ap_message {
+enum ap_message {	
     MSG_HEARTBEAT,
     MSG_ATTITUDE,
     MSG_LOCATION,
+    DRONIADA_PROXY,
     MSG_EXTENDED_STATUS1,
     MSG_EXTENDED_STATUS2,
     MSG_NAV_CONTROLLER_OUTPUT,
@@ -155,6 +157,7 @@ public:
     void send_system_time(AP_GPS &gps);
     void send_radio_in(uint8_t receiver_rssi);
     void send_raw_imu(const AP_InertialSensor &ins, const Compass &compass);
+    void send_droniada_proxy(unsigned char &major, unsigned char &minor, unsigned short int &rssi);
     void send_scaled_pressure(AP_Baro &barometer);
     void send_sensor_offsets(const AP_InertialSensor &ins, const Compass &compass, AP_Baro &barometer);
     void send_ahrs(AP_AHRS &ahrs);
