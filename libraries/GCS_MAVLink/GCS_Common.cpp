@@ -1234,6 +1234,7 @@ void GCS_MAVLINK::send_raw_imu(const AP_InertialSensor &ins, const Compass &comp
 
 void GCS_MAVLINK::send_droniada_proxy(unsigned char &major, unsigned char &minor, unsigned short int &rssi)
 {
+	hal.uartE->printf("Major: %c Minor: %c, Rssi: %d,", major, minor, rssi);
 	mavlink_msg_droniada_proxy_send(
 		chan,
 		major,		
