@@ -1,11 +1,12 @@
 #include <AP_HAL/AP_HAL.h>
 #include "DroniadaProxy.h"
+#include <queue>
 
 //TODO: better to use AP_SerialManager here, like in ardupilot/libraries/AP_RangeFinder/AP_RangeFinder_LightWareSerial.cpp for example
 
 extern const AP_HAL::HAL& hal;
 
-unsigned char buff[12];
+unsigned char buff[3];
 int data_length = 0;
 
 void DroniadaProxy::init()
@@ -27,7 +28,7 @@ void DroniadaProxy::update()
     while (nbytes-- > 0) {
         char c = hal.uartE->read();
     	if (data_length < 2){
-		if (c == 0x33){ //TODO: change to 0xAA
+		if (c == 0x33){
 			data_length++;
 		} else {
 			data_length = 0;
@@ -35,17 +36,13 @@ void DroniadaProxy::update()
 		break;	
 	}
 	buff[data_length++ - 2] = c;
-	if(data_length == 14){
+	if(data_length == 5){
 		data_length = 0;
-		//Droniada d;
-		d.major = buff[0];
-		d.minor = buff[1];
-		d.rssi = (buff[3] << 8) + buff[2];
-		//send_message(DRONIADA_PROXY);
-		//try_to_send_message
-		//send_droniada_proxy(d.major, d.minor, d.rssi);
-		//TODO d.crc = ... , and check CRC
-		//hal.uartE->printf("Major: %c Minor: %c, Rssi: %d,", d.major, d.minor, d.rssi);
+		DroniadaItem* d = new DroniadaItem;
+		d->major = buff[0];
+		d->minor = buff[1];
+		d->rssi = buff[2];
+		beacons.push(d);
 	}
     }
     

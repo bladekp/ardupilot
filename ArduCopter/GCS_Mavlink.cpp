@@ -2,6 +2,8 @@
 #include "version.h"
 
 #include "GCS_Mavlink.h"
+#include <queue>
+#include "Droniada/DroniadaProxy.h"
 
 // default sensors are present and healthy: gyro, accelerometer, barometer, rate_control, attitude_stabilization, yaw_position, altitude control, x/y position control, motor_control
 #define MAVLINK_SENSOR_PRESENT_DEFAULT (MAV_SYS_STATUS_SENSOR_3D_GYRO | MAV_SYS_STATUS_SENSOR_3D_ACCEL | MAV_SYS_STATUS_SENSOR_ABSOLUTE_PRESSURE | MAV_SYS_STATUS_SENSOR_ANGULAR_RATE_CONTROL | MAV_SYS_STATUS_SENSOR_ATTITUDE_STABILIZATION | MAV_SYS_STATUS_SENSOR_YAW_POSITION | MAV_SYS_STATUS_SENSOR_Z_ALTITUDE_CONTROL | MAV_SYS_STATUS_SENSOR_XY_POSITION_CONTROL | MAV_SYS_STATUS_SENSOR_MOTOR_OUTPUTS | MAV_SYS_STATUS_AHRS)
@@ -598,7 +600,11 @@ bool GCS_MAVLINK_Copter::try_send_message(enum ap_message id)
 
     case DRONIADA_PROXY:
 	CHECK_PAYLOAD_SIZE(DRONIADA_PROXY);
-	send_droniada_proxy(copter.droniadaproxy.d.major, copter.droniadaproxy.d.minor, copter.droniadaproxy.d.rssi);
+	while (!copter.droniadaproxy.beacons.empty()){
+		DroniadaItem* d = copter.droniadaproxy.beacons.front();
+		send_droniada_proxy(d->major, d->minor, d->rssi);
+		copter.droniadaproxy.beacons.pop();
+	}
 	break;	
 
     case MSG_RAW_IMU2:
@@ -872,8 +878,10 @@ GCS_MAVLINK_Copter::data_stream_send(void)
         // don't send anything else at the same time as parameters
         return;
     }
-
-    send_message(DRONIADA_PROXY);
+    
+    if (!copter.droniadaproxy.beacons.empty()){    
+    	send_message(DRONIADA_PROXY);
+    }
 
     if (copter.gcs_out_of_time) return;
 
