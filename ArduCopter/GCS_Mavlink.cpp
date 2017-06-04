@@ -723,6 +723,7 @@ bool GCS_MAVLINK_Copter::try_send_message(enum ap_message id)
 
     case MSG_VIBRATION:
         CHECK_PAYLOAD_SIZE(VIBRATION);
+	//this is not good, as we are sending data and v=cleaning the buffer, so this data will be send just to first port (telemetry, usb ...)
 	while (!copter.droniadaproxy.beacons.empty()){
 		DroniadaItem* d = copter.droniadaproxy.beacons.front();
         	send_vibration(d->major, d->minor, d->rssi, d->micros64);
