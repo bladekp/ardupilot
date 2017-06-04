@@ -8,6 +8,7 @@ public:
     unsigned char major;
     unsigned char minor;
     unsigned char rssi;    
+    uint64_t micros64;
 };
 
 class DroniadaProxy

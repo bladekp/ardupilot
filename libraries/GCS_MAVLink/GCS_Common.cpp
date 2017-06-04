@@ -1234,7 +1234,7 @@ void GCS_MAVLINK::send_raw_imu(const AP_InertialSensor &ins, const Compass &comp
         mag.z);        
 }
 
-void GCS_MAVLINK::send_droniada_proxy(unsigned char &major, unsigned char &minor, unsigned char &rssi)
+/*void GCS_MAVLINK::send_droniada_proxy(unsigned char &major, unsigned char &minor, unsigned char &rssi)
 {
 	hal.uartD->printf("Major %d Minor %d Rssi %d \n", major, minor, rssi);
 	
@@ -1244,7 +1244,7 @@ void GCS_MAVLINK::send_droniada_proxy(unsigned char &major, unsigned char &minor
 		minor,	
 		rssi
 	);
-}
+}*/
 
 void GCS_MAVLINK::send_scaled_pressure(AP_Baro &barometer)
 {
@@ -1615,19 +1615,20 @@ void GCS_MAVLINK::send_local_position(const AP_AHRS &ahrs) const
 /*
   send LOCAL_POSITION_NED message
  */
-void GCS_MAVLINK::send_vibration(const AP_InertialSensor &ins) const
+//void GCS_MAVLINK::send_vibration(const AP_InertialSensor &ins) const
+void GCS_MAVLINK::send_vibration(unsigned char &major, unsigned char &minor, unsigned char &rssi, uint64_t micros64)
 {
-    Vector3f vibration = ins.get_vibration_levels();
+    //Vector3f vibration = ins.get_vibration_levels();
 
     mavlink_msg_vibration_send(
         chan,
-        AP_HAL::micros64(),
-        vibration.x,
-        vibration.y,
-        vibration.z,
-        ins.get_accel_clip_count(0),
-        ins.get_accel_clip_count(1),
-        ins.get_accel_clip_count(2));
+        micros64,
+        0.0,
+        0.0,
+        0.0,
+        major,
+        minor,
+        rssi);
 }
 
 void GCS_MAVLINK::send_home(const Location &home) const

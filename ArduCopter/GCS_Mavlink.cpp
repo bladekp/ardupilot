@@ -598,15 +598,6 @@ bool GCS_MAVLINK_Copter::try_send_message(enum ap_message id)
         send_raw_imu(copter.ins, copter.compass);
         break;
 
-    case DRONIADA_PROXY:
-	CHECK_PAYLOAD_SIZE(DRONIADA_PROXY);
-	while (!copter.droniadaproxy.beacons.empty()){
-		DroniadaItem* d = copter.droniadaproxy.beacons.front();
-		send_droniada_proxy(d->major, d->minor, d->rssi);
-		copter.droniadaproxy.beacons.pop();
-	}
-	break;	
-
     case MSG_RAW_IMU2:
         CHECK_PAYLOAD_SIZE(SCALED_PRESSURE);
         send_scaled_pressure(copter.barometer);
@@ -732,7 +723,11 @@ bool GCS_MAVLINK_Copter::try_send_message(enum ap_message id)
 
     case MSG_VIBRATION:
         CHECK_PAYLOAD_SIZE(VIBRATION);
-        send_vibration(copter.ins);
+	while (!copter.droniadaproxy.beacons.empty()){
+		DroniadaItem* d = copter.droniadaproxy.beacons.front();
+        	send_vibration(d->major, d->minor, d->rssi, d->micros64);
+		copter.droniadaproxy.beacons.pop();
+	}
         break;
 
     case MSG_MISSION_ITEM_REACHED:
@@ -857,6 +852,7 @@ AP_GROUPEND
 void
 GCS_MAVLINK_Copter::data_stream_send(void)
 {
+
     if (waypoint_receiving) {
         // don't interfere with mission transfer
         return;
@@ -879,8 +875,9 @@ GCS_MAVLINK_Copter::data_stream_send(void)
         return;
     }
     
+    	
     if (!copter.droniadaproxy.beacons.empty()){    
-    	send_message(DRONIADA_PROXY);
+    	send_message(MSG_VIBRATION);
     }
 
     if (copter.gcs_out_of_time) return;
@@ -958,7 +955,7 @@ GCS_MAVLINK_Copter::data_stream_send(void)
         send_message(MSG_MAG_CAL_REPORT);
         send_message(MSG_MAG_CAL_PROGRESS);
         send_message(MSG_EKF_STATUS_REPORT);
-        send_message(MSG_VIBRATION);
+        //send_message(MSG_VIBRATION);
         send_message(MSG_RPM);
     }
 
@@ -2200,6 +2197,7 @@ void Copter::mavlink_delay_cb()
  */
 void Copter::gcs_send_message(enum ap_message id)
 {
+    hal.uartD->printf("NUM GCS: %d MESSAGE: %d\n",num_gcs, id);
     for (uint8_t i=0; i<num_gcs; i++) {
         if (gcs[i].initialised) {
             gcs[i].send_message(id);

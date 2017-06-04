@@ -26,9 +26,9 @@ void DroniadaProxy::update()
     
     int16_t nbytes = hal.uartE->available();
     while (nbytes-- > 0) {
-        char c = hal.uartE->read();
+        unsigned char c = hal.uartE->read();
     	if (data_length < 2){
-		if (c == 0x33){
+		if (c == 0x05){
 			data_length++;
 		} else {
 			data_length = 0;
@@ -42,7 +42,9 @@ void DroniadaProxy::update()
 		d->major = buff[0];
 		d->minor = buff[1];
 		d->rssi = buff[2];
+		d->micros64 = AP_HAL::micros64();
 		beacons.push(d);
+		//hal.uartD->printf("Beacon %d %d %d",buff[0], buff[1], buff[2]);
 	}
     }
     

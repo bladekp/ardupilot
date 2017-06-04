@@ -37,7 +37,6 @@ enum ap_message {
     MSG_HEARTBEAT,
     MSG_ATTITUDE,
     MSG_LOCATION,
-    DRONIADA_PROXY,
     MSG_EXTENDED_STATUS1,
     MSG_EXTENDED_STATUS2,
     MSG_NAV_CONTROLLER_OUTPUT,
@@ -157,7 +156,7 @@ public:
     void send_system_time(AP_GPS &gps);
     void send_radio_in(uint8_t receiver_rssi);
     void send_raw_imu(const AP_InertialSensor &ins, const Compass &compass);
-    void send_droniada_proxy(unsigned char &major, unsigned char &minor, unsigned char &rssi);
+    //void send_droniada_proxy(unsigned char &major, unsigned char &minor, unsigned char &rssi);
     void send_scaled_pressure(AP_Baro &barometer);
     void send_sensor_offsets(const AP_InertialSensor &ins, const Compass &compass, AP_Baro &barometer);
     void send_ahrs(AP_AHRS &ahrs);
@@ -167,7 +166,8 @@ public:
 #endif
     void send_autopilot_version(uint8_t major_version, uint8_t minor_version, uint8_t patch_version, uint8_t version_type) const;
     void send_local_position(const AP_AHRS &ahrs) const;
-    void send_vibration(const AP_InertialSensor &ins) const;
+    //void send_vibration(const AP_InertialSensor &ins) const;
+    void send_vibration(unsigned char &major, unsigned char &minor, unsigned char &rssi, uint64_t micros64);
     void send_home(const Location &home) const;
     static void send_home_all(const Location &home);
     void send_heartbeat(uint8_t type, uint8_t base_mode, uint32_t custom_mode, uint8_t system_status);

@@ -841,7 +841,7 @@ bool GCS_MAVLINK_Plane::try_send_message(enum ap_message id)
 
     case MSG_VIBRATION:
         CHECK_PAYLOAD_SIZE(VIBRATION);
-        send_vibration(plane.ins);
+        //send_vibration(plane.ins);
         break;
 
     case MSG_RPM:
